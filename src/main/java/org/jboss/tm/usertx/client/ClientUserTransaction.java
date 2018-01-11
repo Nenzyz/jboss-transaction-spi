@@ -46,7 +46,9 @@ import org.jboss.tm.TransactionPropagationContextFactory;
 
 import org.jboss.tm.usertx.interfaces.UserTransactionSession;
 import org.jboss.tm.usertx.interfaces.UserTransactionSessionFactory;
-import org.jboss.naming.NamingContextFactory;
+import org.jboss.tm.usertx.server.UserTransactionSessionImpl;
+import org.jboss.tm.usertx.client.ServerVMClientUserTransaction;
+// import org.jboss.naming.NamingContextFactory;
 import javax.naming.spi.InitialContextFactory;
 
 /**
@@ -126,6 +128,7 @@ public class ClientUserTransaction
       }
       catch (Exception e)
       {
+         e.printStackTrace();
          throw new SystemException(e.toString());
       }
    }
@@ -343,11 +346,15 @@ public class ClientUserTransaction
       {
          // Get a reference to the UT session factory.
          UserTransactionSessionFactory factory;
-         Hashtable env = (Hashtable) NamingContextFactory.lastInitialContextEnv.get();
+        //  Hashtable env = (Hashtable) NamingContextFactory.lastInitialContextEnv.get();
+         Hashtable env = (Hashtable) new ThreadLocal().get();
          InitialContext ctx = new InitialContext(env);
-         factory = (UserTransactionSessionFactory) ctx.lookup("UserTransactionSessionFactory");
+        //  factory = (UserTransactionSessionFactory) ctx.lookup("UserTransactionSessionFactory");
+         System.out.println(" UTSF created");
          // Call factory to get a UT session.
-         session = factory.newInstance();
+        //  session = factory.newInstance();
+         session = UserTransactionSessionImpl.getInstance();
+        //  session = new ServerVMClientUserTransaction();
       }
       catch (Exception ex)
       {

@@ -19,26 +19,43 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.tm.usertx.interfaces;
+package org.jboss.tm.usertx.server;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import org.jboss.tm.usertx.interfaces.UserTransactionSession;
+import org.jboss.tm.usertx.interfaces.UserTransactionSessionFactory;
+
 
 /**
- *  The RMI remote UserTransaction session factory interface.
- *
- *  @author <a href="mailto:osh@sparre.dk">Ole Husgaard</a>
- *  @version $Revision: 57209 $
+ *  The RMI remote UserTransaction session factory implementation.
  */
-public interface UserTransactionSessionFactory
-   extends Remote
+public class UserTransactionSessionFactoryImpl
+   extends UnicastRemoteObject
+   implements UserTransactionSessionFactory
 {
+   /**
+    *  A no-args constructor that throws <code>RemoteException</code>.
+    */
+   public UserTransactionSessionFactoryImpl()
+      throws RemoteException
+   {
+      super();
+   }
+
+   //
+   // implements interface UserTransactionSessionFactory
+   //
 
    /**
     *  Create and return a new session.
     *
-    *  @return A user transaction session.
+    *  @return A new user transaction session.
     */
    public UserTransactionSession newInstance()
-      throws RemoteException;
+      throws RemoteException
+   {
+      return new UserTransactionSessionImpl();
+   }
 }
